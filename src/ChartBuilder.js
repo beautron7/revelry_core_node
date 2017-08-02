@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 const REV_CHART_SPEC = {
-  bar: {
+  Bar: {
     defaultOptions: {
       // Whether the scale should start at zero, or an order of magnitude down from the lowest value
       scaleBeginAtZero: true,
@@ -27,7 +27,7 @@ const REV_CHART_SPEC = {
       datasetFill: false,
     },
   },
-  donut: {
+  Donut: {
     defaultOptions: {
       segmentShowStroke: true,
       segmentStrokeColor: '#fff',
@@ -39,7 +39,7 @@ const REV_CHART_SPEC = {
       animateScale: false,
     },
   },
-  line: {
+  Line: {
     defaultOptions: {
       scaleShowGridLines: true,
       scaleGridLineColor: 'rgba(0,0,0,.05)',
@@ -57,7 +57,7 @@ const REV_CHART_SPEC = {
       datasetFill: false,
     },
   },
-  pie: {
+  Pie: {
     defaultOptions: {
       segmentShowStroke: true,
       segmentStrokeColor: '#fff',
@@ -69,7 +69,7 @@ const REV_CHART_SPEC = {
       animateScale: false,
     },
   },
-  radar: {
+  Radar: {
     defaultOptions: {
       // Whether to show lines for each scale point
       scaleShowLine: true,
@@ -81,7 +81,7 @@ const REV_CHART_SPEC = {
       angleLineColor: 'rgba(0,0,0,.1)',
       // Pixel width of the angle line
       angleLineWidth: 1,
-      pointLabelFontFamily: 'Arial',
+      pointLabelFontFamily: "'Arial'",
       pointLabelFontStyle: 'normal',
       pointLabelFontSize: 10,
       pointLabelFontColor: '#666',
@@ -97,7 +97,7 @@ const REV_CHART_SPEC = {
   },
 }
 
-export default class ChartBuilder extends Component {
+class ChartBuilder extends React.Component {
   static get propTypes() {
     return {
       data: PropTypes.object.isRequired,
@@ -118,7 +118,7 @@ export default class ChartBuilder extends Component {
   }
 
   get ctx() {
-    return this.canvas.getContext('2d')
+    return this.refs.canvas.getDOMNode().getContext('2d')
   }
 
   get chartSpec() {
@@ -142,13 +142,9 @@ export default class ChartBuilder extends Component {
     if(this._chart) {
       throw new Error('`createChart` may only be called once.`')
     }
-    this._chart = new Chart(
-      this.ctx,
-      {
-        type: this.props.type,
-        data: this.props.data,
-        options: this.options
-      }
+    this._chart = new Chart(this.ctx)[this.chartFuncName](
+      this.props.data,
+      this.options,
     )
   }
 
@@ -165,12 +161,11 @@ export default class ChartBuilder extends Component {
   }
 
   render() {
-    this.canvas = null
     return (
       <div>
         <h3 className="ChartTitle">{this.props.title}</h3>
         <canvas
-          ref={self => {this.canvas = self} }
+          ref="canvas"
           width={this.props.width}
           height={this.props.height}
         />
