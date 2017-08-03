@@ -9,6 +9,7 @@ export class Example1 extends Component {
           <span>Enter Your first name:</span>
           <input type="text" name="FirstName" value=""></input>
           <button class="DANGEROUS" type="submit"><span>Begin Quantum Bogosort</span></button>
+          <button class="DANGEROUS" type="submit"><span>Begin Quantum Bogosort</span></button>
         </form>
       </Confirmable>
     )
